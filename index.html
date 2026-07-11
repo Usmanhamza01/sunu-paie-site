@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunu Paie — Gestion de la paie au Sénégal</title>
+<meta name="description" content="IPRES, IR, TRIMF, CSS, CFCE : le barème officiel sénégalais appliqué à chaque bulletin. Déclarations, journal comptable, documents RH. Édition Cloud ou Classique.">
+<link rel="icon" href="icon-192.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --paper:#F7F3E9;
+  --paper-dim:#EFE8D6;
+  --card:#FFFFFF;
+  --ink:#1C2321;
+  --ink-soft:#565F5A;
+  --pine:#0E4A3B;
+  --pine-dark:#0A3428;
+  --gold:#9C7530;
+  --gold-soft:#E9D9B6;
+  --rule:#D2C7AC;
+  --red:#8C3226;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Inter',sans-serif; font-size:15.5px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; letter-spacing:-.005em; margin:0; color:var(--pine-dark);}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{color:inherit;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+img{max-width:100%;display:block;}
+table{border-collapse:collapse;width:100%;}
+
+.nav{position:sticky; top:0; z-index:50; background:rgba(247,243,233,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);}
+.nav-inner{max-width:1120px;margin:0 auto;padding:15px 28px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:600;font-size:18px;color:var(--pine-dark);}
+.nav-links{display:flex;gap:26px;font-size:14px;font-weight:500;color:var(--ink-soft);}
+.nav-links a:hover{color:var(--pine-dark);}
+.nav a.btn-nav{background:var(--pine-dark);color:#fff;padding:9px 18px;border-radius:5px;font-weight:600;font-size:13.5px;text-decoration:none;}
+@media (max-width:780px){ .nav-links{display:none;} }
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:6px;font-weight:700;font-size:15px;text-decoration:none;border:1.5px solid transparent;}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{background:#89651F;}
+.btn-outline{border-color:var(--pine-dark);color:var(--pine-dark);}
+.btn-outline:hover{background:var(--pine-dark);color:#fff;}
+
+.hero{padding:56px 0 48px;border-bottom:1px solid var(--rule);}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:22px;height:1.5px;background:var(--gold);display:inline-block;}
+.hero h1{font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin-bottom:18px;}
+.hero p.lede{font-size:16.5px;color:var(--ink-soft);max-width:490px;margin-bottom:24px;}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px;}
+.hero-facts{list-style:none;padding:0;margin:0;border-top:1px solid var(--rule);max-width:490px;}
+.hero-facts li{padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink-soft);display:flex;gap:10px;}
+.hero-facts li b{color:var(--ink);font-weight:600;}
+.hero-facts li::before{content:'—';color:var(--gold);flex:none;}
+
+.slip{background:var(--card);border:1px solid var(--rule);border-radius:4px;overflow:hidden;}
+.slip-head{background:var(--pine-dark);color:#fff;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.slip-head .ent{font-family:'Fraunces',serif;font-weight:600;font-size:15px;}
+.slip-head .adr{font-size:10.5px;color:rgba(255,255,255,.6);margin-top:2px;}
+.slip-head .titre{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-soft);}
+.slip-id{background:var(--paper-dim);padding:11px 20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 16px;font-size:11px;border-bottom:1px solid var(--rule);}
+.slip-id span{display:block;color:var(--ink-soft);text-transform:uppercase;font-size:9px;letter-spacing:.04em;}
+.slip-id b{font-weight:600;}
+.slip-row{display:grid;grid-template-columns:30px 1fr auto;gap:0;padding:7px 0;border-bottom:1px solid var(--paper-dim);align-items:center;font-size:12.5px;}
+.slip-body{padding:2px 20px;}
+.slip-row .code{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);}
+.slip-row .amt{font-family:'IBM Plex Mono',monospace;text-align:right;}
+.slip-row.sub{background:var(--gold-soft);margin:0 -20px;padding:8px 20px;font-weight:700;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);}
+.slip-row.net{background:var(--pine-dark);color:#fff;margin:0 -20px;padding:12px 20px;font-weight:700;font-size:13.5px;border-bottom:none;}
+.slip-foot{padding:8px 20px;font-size:10px;color:var(--ink-soft);border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+
+section{padding:60px 0;border-bottom:1px solid var(--rule);}
+section:last-of-type{border-bottom:none;}
+.section-head{max-width:680px;margin-bottom:36px;}
+.section-head h2{font-size:clamp(23px,2.8vw,30px);line-height:1.2;margin-bottom:12px;}
+.section-head p{color:var(--ink-soft);font-size:15.5px;}
+
+.feat-list{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--rule);border-left:1px solid var(--rule);}
+.feat{background:var(--card);padding:24px 26px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+.feat .num{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:12px;font-weight:600;margin-bottom:10px;}
+.feat h3{font-size:16.5px;margin-bottom:8px;font-weight:600;}
+.feat p{color:var(--ink-soft);font-size:13.5px;margin:0;}
+@media (max-width:760px){ .feat-list{grid-template-columns:1fr;} }
+
+.rate-table{border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--card);}
+.rate-table th{background:var(--pine-dark);color:#fff;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:11px 16px;text-align:left;font-weight:600;}
+.rate-table td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid var(--paper-dim);}
+.rate-table tr:last-child td{border-bottom:none;}
+.rate-table td.amt{font-family:'IBM Plex Mono',monospace;text-align:right;font-weight:600;color:var(--pine-dark);}
+.rate-table tr:nth-child(even) td{background:var(--paper-dim);}
+
+.cmp{border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--card);}
+.cmp th{padding:16px;text-align:left;font-size:13px;}
+.cmp th.hcol{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--pine-dark);background:var(--paper-dim);}
+.cmp th.hcol.hi{background:var(--pine-dark);color:#fff;}
+.cmp td{padding:12px 16px;font-size:13.5px;border-top:1px solid var(--paper-dim);}
+.cmp td.lbl{color:var(--ink-soft);font-size:13px;}
+.cmp td.yes{color:var(--pine);font-weight:700;text-align:center;}
+.cmp td.no{color:var(--rule);text-align:center;}
+.cmp-cta{padding:16px;border-top:1px solid var(--rule);}
+
+.faq-item{border-bottom:1px solid var(--rule);padding:20px 0;}
+.faq-item h3{font-size:16px;margin-bottom:8px;font-weight:600;color:var(--ink);}
+.faq-item p{color:var(--ink-soft);font-size:14px;margin:0;max-width:720px;}
+
+.cta-final{padding:56px 0 72px;}
+.cta-box{background:var(--pine-dark);border-radius:8px;padding:44px 40px;color:#fff;display:grid;grid-template-columns:1.3fr .7fr;gap:32px;align-items:center;}
+.cta-box h2{color:#fff;font-size:clamp(22px,3vw,28px);margin-bottom:10px;}
+.cta-box p{color:rgba(255,255,255,.72);font-size:14.5px;margin:0;}
+@media (max-width:760px){ .cta-box{grid-template-columns:1fr;} }
+
+footer{padding:30px 0;}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--ink-soft);}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr;}
+  section{padding:44px 0;}
+}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <svg width="26" height="26" viewBox="0 0 40 40"><rect x="1" y="1" width="38" height="38" rx="8" fill="#0A3428"/><rect x="10" y="11.3" width="20" height="3.6" rx="1" fill="#9C7530"/><rect x="10" y="18.2" width="13" height="3.6" rx="1" fill="#E9D9B6"/><rect x="10" y="25.1" width="17" height="3.6" rx="1" fill="#9C7530"/></svg>
+      Sunu Paie
+    </div>
+    <div class="nav-links">
+      <a href="#calculs">Ce qui est calculé</a>
+      <a href="#editions">Éditions</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a class="btn-nav" href="#contact">Demander un accès</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Gestion de la paie — Sénégal</div>
+      <h1>Le calcul complet de la paie sénégalaise, conforme au barème officiel.</h1>
+      <p class="lede">IPRES, impôt sur le revenu, TRIMF, CSS, CFCE, prime d'ancienneté, quotient familial : chaque cotisation est recalculée à chaque bulletin, salarié par salarié, mois par mois — sans formule à tenir à jour soi-même.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-gold" href="#contact">Demander un accès</a>
+        <a class="btn btn-outline" href="#calculs">Voir le détail des calculs</a>
+      </div>
+      <ul class="hero-facts">
+        <li>Barème IPRES, CSS, TRIMF et impôt sur le revenu tenus à jour</li>
+        <li>Bulletins imprimables, déclarations VRS/IPRES/CSS et journal comptable SAGE</li>
+        <li>Édition Cloud (multi-utilisateurs) ou Classique (poste local, hors ligne)</li>
+      </ul>
+    </div>
+    <div>
+      <div class="slip">
+        <div class="slip-head">
+          <div><div class="ent">Pharmacie Exemple</div><div class="adr">Dakar, Sénégal — NINEA 000000000</div></div>
+          <div class="titre">Bulletin de paie<br>Juillet 2026</div>
+        </div>
+        <div class="slip-id">
+          <div><span>Nom &amp; prénom</span><b>Ndiaye Fatou</b></div>
+          <div><span>Qualification</span><b>Vendeuse</b></div>
+          <div><span>Parts (IR/TRIMF)</span><b>1,5</b></div>
+        </div>
+        <div class="slip-body">
+          <div class="slip-row"><span class="code">001</span><span>Salaire de base</span><span class="amt">350 000 F</span></div>
+          <div class="slip-row"><span class="code">007</span><span>Prime d'ancienneté (4%)</span><span class="amt">14 000 F</span></div>
+          <div class="slip-row sub"><span class="code">013</span><span>Salaire brut</span><span class="amt">364 000 F</span></div>
+          <div class="slip-row"><span class="code">014</span><span>IPRES RG (5,6%)</span><span class="amt">20 384 F</span></div>
+          <div class="slip-row"><span class="code">016</span><span>Impôt sur le revenu</span><span class="amt">12 900 F</span></div>
+          <div class="slip-row"><span class="code">017</span><span>TRIMF</span><span class="amt">400 F</span></div>
+          <div class="slip-row net"><span class="code"></span><span>Net à payer</span><span class="amt">328 000 F</span></div>
+        </div>
+        <div class="slip-foot"><span>Coût total employeur : 393 156 F</span><span>Payé le ……………</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="calculs">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Ce qui est calculé</div>
+      <h2>Chaque cotisation, au taux exact en vigueur.</h2>
+      <p>Les taux ci-dessous sont ceux appliqués par défaut à chaque bulletin. Ils restent modifiables si la réglementation évolue.</p>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="rate-table" style="min-width:640px">
+      <thead><tr><th>Cotisation</th><th style="text-align:right">Part salariale</th><th style="text-align:right">Part patronale</th><th style="text-align:right">Plafond mensuel</th></tr></thead>
+      <tbody>
+        <tr><td>IPRES — Régime général (RG)</td><td class="amt">5,6 %</td><td class="amt">8,4 %</td><td class="amt">432 000 F</td></tr>
+        <tr><td>IPRES — Régime complémentaire (RC)</td><td class="amt">2,4 %</td><td class="amt">3,6 %</td><td class="amt">1 296 000 F</td></tr>
+        <tr><td>CSS — Allocations familiales</td><td class="amt">—</td><td class="amt">7 %</td><td class="amt">63 000 F</td></tr>
+        <tr><td>CSS — Accident du travail</td><td class="amt">—</td><td class="amt">3 %</td><td class="amt">63 000 F</td></tr>
+        <tr><td>CFCE</td><td class="amt">—</td><td class="amt">3 %</td><td class="amt">sur le brut total</td></tr>
+        <tr><td>TRIMF</td><td class="amt">selon barème et nombre de parts</td><td class="amt">—</td><td class="amt">—</td></tr>
+        <tr><td>Impôt sur le revenu (IR)</td><td class="amt">barème DGID, 1 à 5 parts</td><td class="amt">—</td><td class="amt">—</td></tr>
+        <tr><td>Prime d'ancienneté</td><td class="amt">2 % dès 2 ans, +1 %/an</td><td class="amt">—</td><td class="amt">—</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Fonctionnalités</div>
+      <h2>Au-delà du calcul du bulletin.</h2>
+      <p>La paie ne s'arrête pas au bulletin : déclarations, documents RH et suivi de l'équipe sont couverts.</p>
+    </div>
+    <div class="feat-list">
+      <div class="feat"><div class="num">Salariés</div><h3>Fiches complètes</h3><p>État civil, situation familiale, enfants à charge, type de contrat, période d'essai, date d'entrée — parts fiscales et taux d'ancienneté recalculés automatiquement à partir de ces informations.</p></div>
+      <div class="feat"><div class="num">Saisie mensuelle</div><h3>Salaire, primes, congés</h3><p>Sursalaire, heures supplémentaires, primes exceptionnelles, 13e mois, indemnités de transport, retenues diverses (avances, prêts, Tabaski) — et un mode dédié pour les mois de congé.</p></div>
+      <div class="feat"><div class="num">Déclarations</div><h3>VRS, IPRES, CSS</h3><p>Récapitulatifs mensuels et annuels générés automatiquement, prêts pour le dépôt auprès des organismes concernés.</p></div>
+      <div class="feat"><div class="num">Comptabilité</div><h3>Journal SAGE</h3><p>Écritures débit/crédit par compte, mois par mois ou sur l'année complète, exportées en Excel.</p></div>
+      <div class="feat"><div class="num">Documents RH</div><h3>Attestations, certificats</h3><p>Attestation de travail et certificat de travail générés à partir de la fiche du salarié, prêts à imprimer.</p></div>
+      <div class="feat"><div class="num">Suivi</div><h3>Journal d'activité</h3><p>Historique des créations, modifications et suppressions sur chaque entreprise — qui a fait quoi, et quand.</p></div>
+      <div class="feat"><div class="num">Exports</div><h3>Excel, tableau par tableau</h3><p>Chaque tableau du récapitulatif s'exporte individuellement, ou tous ensemble en un seul fichier.</p></div>
+      <div class="feat"><div class="num">Multi-entreprises</div><h3>Droits par utilisateur</h3><p>Plusieurs sociétés gérées depuis un seul compte, avec des droits d'accès différents pour chaque collaborateur (édition Cloud).</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="editions">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Deux éditions</div>
+      <h2>Même moteur de calcul, deux façons de l'installer.</h2>
+      <p>Le choix dépend de votre organisation : une seule personne sur un poste, ou une équipe répartie.</p>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="cmp" style="min-width:600px">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="hcol">Classique</th>
+          <th class="hcol hi">Cloud</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl">Connexion internet requise au quotidien</td><td class="no">Non</td><td class="yes">Oui</td></tr>
+        <tr><td class="lbl">Données stockées</td><td>Sur l'ordinateur installé</td><td>Hébergées, accessibles de partout</td></tr>
+        <tr><td class="lbl">Nombre d'utilisateurs</td><td>Un poste, un mot de passe local</td><td>Plusieurs comptes, droits différents chacun</td></tr>
+        <tr><td class="lbl">Sauvegardes</td><td>Manuelles (export .json)</td><td>Automatiques</td></tr>
+        <tr><td class="lbl">Mises à jour</td><td>Réinstallation d'une nouvelle version</td><td>Automatiques</td></tr>
+        <tr><td class="lbl">Bulletins, déclarations, journal SAGE, documents RH</td><td class="yes">Oui</td><td class="yes">Oui</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="3" class="cmp-cta"><a class="btn btn-gold" href="#contact">Demander un accès — préciser l'édition souhaitée</a></td></tr></tfoot>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Questions fréquentes</div>
+      <h2>Avant de vous décider.</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item"><h3>Les taux et barèmes sont-ils vérifiés ?</h3><p>Oui — les taux IPRES, CSS, CFCE et le barème de l'impôt sur le revenu sont ceux en vigueur, comparés ligne par ligne à de vrais bulletins de paie sénégalais lors de la mise en place.</p></div>
+      <div class="faq-item"><h3>Que se passe-t-il si la réglementation change ?</h3><p>Les taux sont modifiables dans les paramètres de l'entreprise. Pour l'édition Cloud, les mises à jour du barème sont déployées automatiquement.</p></div>
+      <div class="faq-item"><h3>Mes données sont-elles partagées entre plusieurs entreprises ?</h3><p>Non. Chaque entreprise a ses propres salariés, saisies et paramètres, isolés des autres — y compris si vous en gérez plusieurs depuis le même compte.</p></div>
+      <div class="faq-item"><h3>Puis-je changer d'édition plus tard ?</h3><p>Oui, une sauvegarde exportée d'une édition peut être réimportée dans l'autre.</p></div>
+      <div class="faq-item"><h3>Que se passe-t-il si je ne renouvelle pas ma licence ?</h3><p>L'accès se bloque à l'expiration, mais aucune donnée n'est supprimée. Un renouvellement redonne immédiatement accès à tout.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap cta-final" id="contact">
+  <div class="cta-box">
+    <div>
+      <h2>Demander un accès</h2>
+      <p>Précisez le nom de votre entreprise et l'édition souhaitée (Cloud ou Classique) — une licence vous sera transmise après échange.</p>
+    </div>
+    <div>
+      <a class="btn btn-gold" href="mailto:contact@sunupaie.sn?subject=Demande%20d'acc%C3%A8s%20Sunu%20Paie" style="width:100%;justify-content:center">contact@sunupaie.sn</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div>© <span id="year"></span> Sunu Paie</div>
+    <div>Gestion de la paie au Sénégal</div>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
