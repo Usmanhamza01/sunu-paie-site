@@ -3,302 +3,690 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sunu Paie — Gestion de la paie au Sénégal</title>
-<meta name="description" content="IPRES, IR, TRIMF, CSS, CFCE : le barème officiel sénégalais appliqué à chaque bulletin. Déclarations, journal comptable, documents RH. Édition Cloud ou Classique.">
-<link rel="icon" href="icon-192.png">
+<title>Sunu Paie — La gestion de la paie des entreprises sénégalaises</title>
+<meta name="description" content="IPRES, IR, TRIMF, CSS, CFCE calculés automatiquement. Bulletins, déclarations, journal comptable. Sur téléphone, ordinateur et Windows. Cloud ou Classique hors ligne.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<script>
+/* ================================================================
+   CONFIGURATION DES LIENS — LE SEUL ENDROIT À MODIFIER
+   ================================================================
+   app       : adresse de Sunu Paie Cloud (déployée sur Cloudflare Pages)
+   classique : (optionnel) URL d'une version web hors ligne de Classique — laissez "" si non applicable
+   exe       : lien direct de l'installateur Windows de Sunu Paie Classique.
+               Conseil pro : publiez le .exe dans GitHub Releases avec un nom
+               fixe ; le lien .../releases/latest/download/... pointera alors
+               TOUJOURS vers la dernière version, sans jamais retoucher le site.
+   video     : ID YouTube de votre démo (les 11 caractères après watch?v=)
+               Laissez "" tant que la vidéo n'est pas prête.
+   wa        : numéro WhatsApp au format international, sans + ni espaces
+   mail      : votre adresse e-mail de contact
+================================================================ */
+window.LIENS = {
+  app:       "",   // ex: "https://sunu-paie-cloud.pages.dev/"
+  classique: "",
+  exe:       "",   // ex: lien GitHub Releases vers Sunu-Paie-Classique-Setup.exe
+  video:     "",
+  wa:        "",   // ex: "221771234567"
+  mail:      "contact@sunupaie.sn"
+};
+</script>
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
 :root{
-  --paper:#F7F3E9;
-  --paper-dim:#EFE8D6;
-  --card:#FFFFFF;
-  --ink:#1C2321;
-  --ink-soft:#565F5A;
-  --pine:#0E4A3B;
-  --pine-dark:#0A3428;
-  --gold:#9C7530;
-  --gold-soft:#E9D9B6;
-  --rule:#D2C7AC;
-  --red:#8C3226;
+  --ink:#1C2321; --ink-2:#26302B; --paper:#F7F3E9; --card:#FFFFFF;
+  --green:#0E4A3B; --green-d:#0A3428; --mint:#8FBFA6; --amber:#9C7530;
+  --mut:#5B6660; --line:#E2D9C2; --line-2:#EDE6D3;
+  --r:16px; --sh:0 24px 60px -20px rgba(10,52,40,.20);
+  --ease:cubic-bezier(.22,.8,.3,1);
 }
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  margin:0; background:var(--paper); color:var(--ink);
-  font-family:'Inter',sans-serif; font-size:15.5px; line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-}
-h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; letter-spacing:-.005em; margin:0; color:var(--pine-dark);}
-.mono{font-family:'IBM Plex Mono',monospace;}
-a{color:inherit;}
-.wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
-img{max-width:100%;display:block;}
-table{border-collapse:collapse;width:100%;}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3.serif{font-family:'Fraunces',Georgia,serif;letter-spacing:-.015em;line-height:1.08}
+a{color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 1.4rem}
+section{padding:6rem 0}
+@media(max-width:760px){section{padding:4rem 0}}
+.kicker{display:inline-flex;align-items:center;gap:.5rem;font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:1.1rem}
+.kicker::before{content:"";width:22px;height:2px;background:var(--amber)}
+.h2{font-size:clamp(1.9rem,4.2vw,2.9rem);font-weight:600;margin-bottom:1rem;max-width:22ch}
+.lead{color:var(--mut);font-size:1.08rem;max-width:58ch}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;padding:.95rem 1.7rem;border-radius:10px;font-weight:800;text-decoration:none;font-size:.98rem;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .2s;cursor:pointer;border:none}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn-p{background:var(--green);color:#fff;box-shadow:0 10px 24px -10px rgba(14,74,59,.55)}
+.btn-p:hover{background:var(--green-d)}
+.btn-a{background:var(--amber);color:#fff;box-shadow:0 10px 24px -10px rgba(156,117,48,.55)}
+.btn-a:hover{background:#83641F}
+.btn-g{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.btn-g:hover{border-color:#fff;background:rgba(255,255,255,.06)}
+.btn-o{background:#fff;color:var(--green);border:1.5px solid var(--green)}
+.btn svg{width:18px;height:18px;flex:none}
 
-.nav{position:sticky; top:0; z-index:50; background:rgba(247,243,233,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);}
-.nav-inner{max-width:1120px;margin:0 auto;padding:15px 28px;display:flex;align-items:center;justify-content:space-between;}
-.nav-brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:600;font-size:18px;color:var(--pine-dark);}
-.nav-links{display:flex;gap:26px;font-size:14px;font-weight:500;color:var(--ink-soft);}
-.nav-links a:hover{color:var(--pine-dark);}
-.nav a.btn-nav{background:var(--pine-dark);color:#fff;padding:9px 18px;border-radius:5px;font-weight:600;font-size:13.5px;text-decoration:none;}
-@media (max-width:780px){ .nav-links{display:none;} }
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}*{animation:none!important}}
 
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:6px;font-weight:700;font-size:15px;text-decoration:none;border:1.5px solid transparent;}
-.btn-gold{background:var(--gold);color:#fff;}
-.btn-gold:hover{background:#89651F;}
-.btn-outline{border-color:var(--pine-dark);color:var(--pine-dark);}
-.btn-outline:hover{background:var(--pine-dark);color:#fff;}
+nav{position:sticky;top:0;z-index:60;background:rgba(247,243,233,.88);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border .3s,box-shadow .3s}
+nav.scr{border-bottom-color:var(--line);box-shadow:0 6px 24px -16px rgba(10,52,40,.18)}
+nav .wrap{display:flex;align-items:center;gap:1.6rem;height:72px}
+.logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1.25rem;font-family:'Fraunces',serif;text-decoration:none;color:var(--green-d)}
+.logo svg{width:36px;height:36px;border-radius:10px;box-shadow:0 6px 14px -6px rgba(10,52,40,.5)}
+nav .links{margin-left:auto;display:flex;gap:1.6rem;align-items:center}
+nav .links a{text-decoration:none;font-weight:700;font-size:.92rem;color:var(--mut);transition:color .2s}
+nav .links a:hover{color:var(--green)}
+nav .links .btn{padding:.6rem 1.2rem;font-size:.88rem}
+@media(max-width:820px){nav .links a:not(.btn){display:none}}
 
-.hero{padding:56px 0 48px;border-bottom:1px solid var(--rule);}
-.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start;}
-.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-.eyebrow::before{content:'';width:22px;height:1.5px;background:var(--gold);display:inline-block;}
-.hero h1{font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin-bottom:18px;}
-.hero p.lede{font-size:16.5px;color:var(--ink-soft);max-width:490px;margin-bottom:24px;}
-.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px;}
-.hero-facts{list-style:none;padding:0;margin:0;border-top:1px solid var(--rule);max-width:490px;}
-.hero-facts li{padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink-soft);display:flex;gap:10px;}
-.hero-facts li b{color:var(--ink);font-weight:600;}
-.hero-facts li::before{content:'—';color:var(--gold);flex:none;}
+.hero{background:radial-gradient(1200px 600px at 75% -10%,#124436 0%,var(--green-d) 55%,#061C15 100%);color:#fff;overflow:hidden;position:relative}
+.hero::after{content:"";position:absolute;inset:0;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect x="24" y="66" width="12" height="26" rx="3" fill="white" opacity=".025"/><rect x="44" y="52" width="12" height="40" rx="3" fill="white" opacity=".025"/><rect x="64" y="36" width="12" height="56" rx="3" fill="white" opacity=".025"/></svg>');pointer-events:none}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:3.5rem;align-items:center;padding-top:5.5rem;padding-bottom:6.5rem}
+@media(max-width:920px){.hero .wrap{grid-template-columns:1fr;padding-top:3.5rem;padding-bottom:4rem}}
+.hero .kicker{color:var(--mint)}
+.hero .kicker::before{background:var(--amber)}
+.hero h1{font-size:clamp(2.4rem,5.4vw,3.8rem);font-weight:600;margin-bottom:1.3rem}
+.hero h1 em{font-style:italic;color:var(--amber)}
+.hero p.sub{color:rgba(255,255,255,.78);font-size:1.14rem;max-width:48ch;margin-bottom:2.1rem}
+.hero .cta{display:flex;gap:.9rem;flex-wrap:wrap;margin-bottom:2.2rem}
+.hero .ticks{display:flex;gap:1.6rem;flex-wrap:wrap;font-size:.85rem;color:rgba(255,255,255,.72)}
+.hero .ticks span{display:flex;align-items:center;gap:.45rem}
+.hero .ticks svg{width:15px;height:15px;color:var(--mint)}
 
-.slip{background:var(--card);border:1px solid var(--rule);border-radius:4px;overflow:hidden;}
-.slip-head{background:var(--pine-dark);color:#fff;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
-.slip-head .ent{font-family:'Fraunces',serif;font-weight:600;font-size:15px;}
-.slip-head .adr{font-size:10.5px;color:rgba(255,255,255,.6);margin-top:2px;}
-.slip-head .titre{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-soft);}
-.slip-id{background:var(--paper-dim);padding:11px 20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 16px;font-size:11px;border-bottom:1px solid var(--rule);}
-.slip-id span{display:block;color:var(--ink-soft);text-transform:uppercase;font-size:9px;letter-spacing:.04em;}
-.slip-id b{font-weight:600;}
-.slip-row{display:grid;grid-template-columns:30px 1fr auto;gap:0;padding:7px 0;border-bottom:1px solid var(--paper-dim);align-items:center;font-size:12.5px;}
-.slip-body{padding:2px 20px;}
-.slip-row .code{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);}
-.slip-row .amt{font-family:'IBM Plex Mono',monospace;text-align:right;}
-.slip-row.sub{background:var(--gold-soft);margin:0 -20px;padding:8px 20px;font-weight:700;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);}
-.slip-row.net{background:var(--pine-dark);color:#fff;margin:0 -20px;padding:12px 20px;font-weight:700;font-size:13.5px;border-bottom:none;}
-.slip-foot{padding:8px 20px;font-size:10px;color:var(--ink-soft);border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+.stage{position:relative;perspective:1200px}
+.browser{background:#fff;border-radius:16px;box-shadow:var(--sh),0 0 0 1px rgba(255,255,255,.08);overflow:hidden;transform:rotateY(-6deg) rotateX(2deg);font-size:10px;color:var(--ink)}
+.browser .bar{background:#F1EBDD;padding:9px 12px;display:flex;gap:6px;align-items:center}
+.browser .bar i{width:9px;height:9px;border-radius:50%;background:#DCD3BE}
+.browser .bar .url{margin-left:8px;background:#fff;border-radius:6px;padding:3px 10px;font-size:8px;color:var(--mut);flex:1}
+.b-body{display:grid;grid-template-columns:88px 1fr;min-height:300px}
+.b-side{background:var(--green-d);color:rgba(255,255,255,.75);padding:10px 8px;font-size:7.5px;font-weight:700}
+.b-side .it{padding:6px 8px;border-radius:6px;margin-bottom:2px;display:flex;gap:6px;align-items:center}
+.b-side .it.on{background:var(--green);color:#fff}
+.b-side .dot{width:6px;height:6px;border-radius:2px;background:currentColor;opacity:.7}
+.b-main{padding:12px;background:var(--paper)}
+.b-hero{background:var(--green);color:#fff;border-radius:10px;padding:10px 12px;margin-bottom:9px;position:relative;overflow:hidden}
+.b-hero .l{font-size:6.5px;text-transform:uppercase;letter-spacing:.08em;opacity:.8}
+.b-hero .v{font-size:17px;font-weight:600;font-family:'Fraunces',serif}
+.b-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px}
+.b-kpi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px}
+.b-kpi .l{font-size:5.8px;font-weight:800;color:var(--mut);text-transform:uppercase}
+.b-kpi .v{font-size:10px;font-weight:600;font-family:'Fraunces',serif;color:var(--green-d)}
+.b-ledger{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-family:'IBM Plex Mono',monospace}
+.b-ledger .lh{background:var(--green-d);color:#fff;padding:6px 8px;font-size:6.5px;display:flex;justify-content:space-between;font-family:'Inter',sans-serif}
+.b-ledger .lrow{display:grid;grid-template-columns:16px 1fr 34px 34px 30px;gap:4px;padding:2.5px 8px;border-bottom:1px solid var(--line-2);font-size:6px;align-items:center}
+.b-ledger .lrow span:first-child{color:var(--mut)}
+.b-ledger .lrow span:nth-child(3),.b-ledger .lrow span:nth-child(4),.b-ledger .lrow span:nth-child(5){text-align:right}
+.b-ledger .lrow.head{font-weight:800;color:var(--mut);font-size:5.2px;text-transform:uppercase;background:var(--paper)}
+.b-ledger .lrow.net{background:var(--green-d);color:#fff;font-weight:800;border-bottom:none}
+.phone2{position:absolute;right:-18px;bottom:-38px;width:150px;background:#101010;border-radius:24px;padding:7px;box-shadow:0 30px 60px -18px rgba(0,0,0,.5);animation:float 7s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.phone2 .scr{background:var(--paper);border-radius:18px;overflow:hidden;font-size:7px}
+.phone2 .ph{background:var(--green);color:#fff;padding:8px;font-weight:800;font-size:7.5px}
+.phone2 .ph small{display:block;font-weight:600;font-size:5.5px;opacity:.75}
+.phone2 .row{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line-2);background:#fff}
+.phone2 .row b{font-size:6.5px}
+.phone2 .row small{display:block;color:var(--mut);font-size:5.2px}
+.phone2 .amt{font-weight:800;font-size:6.5px}
+@media(max-width:920px){.browser{transform:none}.phone2{right:4px;bottom:-24px}}
 
-section{padding:60px 0;border-bottom:1px solid var(--rule);}
-section:last-of-type{border-bottom:none;}
-.section-head{max-width:680px;margin-bottom:36px;}
-.section-head h2{font-size:clamp(23px,2.8vw,30px);line-height:1.2;margin-bottom:12px;}
-.section-head p{color:var(--ink-soft);font-size:15.5px;}
+.sectors{border-bottom:1px solid var(--line);padding:1.6rem 0;background:#fff}
+.sectors .wrap{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;justify-content:center}
+.sectors .lbl{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-right:.6rem}
+.chip{padding:.45rem 1rem;border:1px solid var(--line);border-radius:99px;font-size:.85rem;font-weight:700;color:var(--ink-2);background:var(--paper)}
 
-.feat-list{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--rule);border-left:1px solid var(--rule);}
-.feat{background:var(--card);padding:24px 26px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
-.feat .num{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:12px;font-weight:600;margin-bottom:10px;}
-.feat h3{font-size:16.5px;margin-bottom:8px;font-weight:600;}
-.feat p{color:var(--ink-soft);font-size:13.5px;margin:0;}
-@media (max-width:760px){ .feat-list{grid-template-columns:1fr;} }
+.stats{background:#fff;border-bottom:1px solid var(--line)}
+.stats .wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;padding:2.6rem 1.4rem}
+.stat{text-align:center}
+.stat b{display:block;font-family:'Fraunces';font-size:2.2rem;font-weight:600;color:var(--green)}
+.stat span{font-size:.85rem;color:var(--mut);font-weight:600}
 
-.rate-table{border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--card);}
-.rate-table th{background:var(--pine-dark);color:#fff;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:11px 16px;text-align:left;font-weight:600;}
-.rate-table td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid var(--paper-dim);}
-.rate-table tr:last-child td{border-bottom:none;}
-.rate-table td.amt{font-family:'IBM Plex Mono',monospace;text-align:right;font-weight:600;color:var(--pine-dark);}
-.rate-table tr:nth-child(even) td{background:var(--paper-dim);}
+.spot{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding:3.4rem 0}
+.spot:nth-child(even){direction:rtl}
+.spot:nth-child(even)>*{direction:ltr}
+@media(max-width:880px){.spot{grid-template-columns:1fr;gap:2rem;padding:2.4rem 0}.spot:nth-child(even){direction:ltr}}
+.spot h3{font-family:'Fraunces';font-size:clamp(1.5rem,3vw,2.1rem);font-weight:600;margin-bottom:.8rem}
+.spot p{color:var(--mut);margin-bottom:1.2rem}
+.ticklist{list-style:none}
+.ticklist li{padding:.42rem 0 .42rem 2rem;position:relative;font-weight:600;font-size:.97rem}
+.ticklist li::before{content:"";position:absolute;left:0;top:.6rem;width:19px;height:19px;border-radius:50%;background:var(--mint) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%230A3428" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></svg>') center/11px no-repeat}
+.shot{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.shot .cap{background:var(--paper);border-top:1px solid var(--line-2);padding:.6rem 1rem;font-size:.72rem;font-weight:700;color:var(--mut);text-align:center}
 
-.cmp{border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--card);}
-.cmp th{padding:16px;text-align:left;font-size:13px;}
-.cmp th.hcol{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--pine-dark);background:var(--paper-dim);}
-.cmp th.hcol.hi{background:var(--pine-dark);color:#fff;}
-.cmp td{padding:12px 16px;font-size:13.5px;border-top:1px solid var(--paper-dim);}
-.cmp td.lbl{color:var(--ink-soft);font-size:13px;}
-.cmp td.yes{color:var(--pine);font-weight:700;text-align:center;}
-.cmp td.no{color:var(--rule);text-align:center;}
-.cmp-cta{padding:16px;border-top:1px solid var(--rule);}
+.m-slip{padding:0;font-size:.78rem}
+.m-slip .h{background:var(--green-d);color:#fff;padding:.9rem 1.1rem;display:flex;justify-content:space-between;align-items:flex-start}
+.m-slip .h b{font-family:'Fraunces',serif;font-size:.95rem}
+.m-slip .h small{display:block;color:rgba(255,255,255,.6);font-size:.68rem;margin-top:2px}
+.m-slip .h .r{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.04em;color:#E9D9B6;text-transform:uppercase}
+.m-slip table{width:100%;border-collapse:collapse}
+.m-slip th{background:var(--paper);color:var(--mut);font-size:.6rem;text-transform:uppercase;text-align:left;padding:.4rem .8rem;border-bottom:1px solid var(--line)}
+.m-slip th:last-child,.m-slip td:last-child{text-align:right}
+.m-slip td{padding:.4rem .8rem;border-bottom:1px solid var(--line-2);font-size:.72rem}
+.m-slip .tot td{background:#F1E6CC;font-weight:800;color:var(--green-d)}
+.m-slip .net td{background:var(--green-d);color:#fff;font-weight:800;font-size:.8rem}
+.m-dec{padding:1.1rem;font-size:.74rem}
+.m-dec table{width:100%;border-collapse:collapse}
+.m-dec th{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);text-align:left;padding:.4rem .5rem;border-bottom:1.5px solid var(--line)}
+.m-dec td{padding:.5rem;border-bottom:1px solid var(--line-2)}
+.m-dec .tot td{background:#F1E6CC;font-weight:800}
+.pill{display:inline-block;padding:.14rem .55rem;border-radius:99px;font-size:.62rem;font-weight:800}
+.pill.ok{background:#E3EEE8;color:var(--green)}
+.m-sync{padding:1.6rem;display:flex;align-items:center;justify-content:center;gap:1.2rem;min-height:230px;background:linear-gradient(180deg,#fff, #F1EBDD)}
+.dev{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.8rem;text-align:center;box-shadow:0 12px 26px -14px rgba(10,52,40,.25)}
+.dev svg{width:44px;height:44px;color:var(--green)}
+.dev b{display:block;font-size:.72rem;margin-top:.3rem}
+.link-anim{flex:none;width:64px;height:3px;background:repeating-linear-gradient(90deg,var(--mint) 0 8px,transparent 8px 16px);background-size:32px 3px;animation:dash 1.2s linear infinite;border-radius:3px}
+@keyframes dash{to{background-position:32px 0}}
+.cloud-ic{width:56px;height:56px;border-radius:16px;background:var(--green);display:grid;place-items:center;box-shadow:0 14px 30px -12px rgba(14,74,59,.6)}
+.cloud-ic svg{width:30px;height:30px;color:#fff}
 
-.faq-item{border-bottom:1px solid var(--rule);padding:20px 0;}
-.faq-item h3{font-size:16px;margin-bottom:8px;font-weight:600;color:var(--ink);}
-.faq-item p{color:var(--ink-soft);font-size:14px;margin:0;max-width:720px;}
+.gridf{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.1rem;margin-top:2.6rem}
+.gf{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.5rem;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.gf:hover{transform:translateY(-5px);box-shadow:var(--sh)}
+.gf .ic{width:44px;height:44px;border-radius:12px;background:#E9F1EC;color:var(--green);display:grid;place-items:center;margin-bottom:1rem}
+.gf .ic svg{width:22px;height:22px}
+.gf h3{font-size:1.02rem;font-weight:800;margin-bottom:.4rem}
+.gf p{font-size:.9rem;color:var(--mut)}
 
-.cta-final{padding:56px 0 72px;}
-.cta-box{background:var(--pine-dark);border-radius:8px;padding:44px 40px;color:#fff;display:grid;grid-template-columns:1.3fr .7fr;gap:32px;align-items:center;}
-.cta-box h2{color:#fff;font-size:clamp(22px,3vw,28px);margin-bottom:10px;}
-.cta-box p{color:rgba(255,255,255,.72);font-size:14.5px;margin:0;}
-@media (max-width:760px){ .cta-box{grid-template-columns:1fr;} }
+.video{background:var(--ink);color:#fff}
+.video .h2{color:#fff}
+.vframe{position:relative;margin:2.4rem auto 0;max-width:880px;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:linear-gradient(135deg,var(--green-d),#08201A);box-shadow:0 40px 90px -30px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.09)}
+.vframe iframe{width:100%;height:100%;border:0;display:none}
+.vposter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;cursor:pointer}
+.play{width:84px;height:84px;border-radius:50%;background:var(--amber);display:grid;place-items:center;box-shadow:0 20px 50px -12px rgba(156,117,48,.65);transition:transform .3s var(--ease)}
+.vposter:hover .play{transform:scale(1.08)}
+.play svg{width:30px;height:30px;color:#fff;margin-left:4px}
+.vposter b{font-size:1.05rem}
+.vposter small{color:rgba(255,255,255,.65);font-size:.85rem}
 
-footer{padding:30px 0;}
-.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--ink-soft);}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.3rem;margin-top:2.8rem;align-items:stretch}
+.plan{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:2rem;display:flex;flex-direction:column;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.plan:hover{transform:translateY(-6px);box-shadow:var(--sh)}
+.plan.star{border-color:var(--green);position:relative;background:linear-gradient(180deg,#fff,#F5F8F6)}
+.plan.star::before{content:"Recommandé";position:absolute;top:-13px;left:2rem;background:var(--green);color:#fff;font-size:.68rem;font-weight:800;padding:.3rem .8rem;border-radius:99px;letter-spacing:.04em}
+.plan h3{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin-bottom:.3rem}
+.plan .price{font-family:'Fraunces',serif;font-size:2.3rem;font-weight:600;color:var(--green);margin:.6rem 0 .1rem}
+.plan .per{font-size:.82rem;color:var(--mut);margin-bottom:1.3rem}
+.plan ul{list-style:none;margin-bottom:1.6rem;flex:1}
+.plan li{padding:.5rem 0 .5rem 1.6rem;position:relative;font-size:.92rem;border-top:1px solid var(--line-2)}
+.plan li:first-child{border-top:none}
+.plan li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+.plan li.no{color:#B7AF9B}
+.plan li.no::before{content:"—";color:#C9C1AA}
 
-@media (max-width:900px){
-  .hero-grid{grid-template-columns:1fr;}
-  section{padding:44px 0;}
-}
+.dl-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-top:2.2rem}
+.dl{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.7rem;display:flex;flex-direction:column;gap:.7rem;box-shadow:0 16px 40px -24px rgba(10,52,40,.2)}
+.dl .ic{width:46px;height:46px;border-radius:12px;background:#E9F1EC;color:var(--green);display:grid;place-items:center}
+.dl .ic svg{width:24px;height:24px}
+.dl h3{font-weight:800;font-size:1.08rem}
+.dl p{font-size:.9rem;color:var(--mut);flex:1}
+.dl .note{font-size:.74rem;color:var(--mut)}
+#os-hint{font-weight:700;color:var(--green)}
+
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.4rem;margin:2.6rem 0}
+.tls{background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.6rem}
+.tls .n{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;font-family:'Fraunces',serif;margin-bottom:.9rem}
+.tls h3{font-size:1.02rem;font-weight:800;margin-bottom:.4rem}
+.tls p{font-size:.88rem;color:var(--mut)}
+.keybox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.8rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.keybox code{display:block;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:.6rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:.95rem;color:var(--green-d);font-weight:600}
+.keybox p{color:var(--mut);font-size:.9rem;max-width:34ch;margin:0}
+
+.faqgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));gap:1rem;margin-top:2.4rem}
+details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.3rem}
+summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.3rem;color:var(--green);flex:none}
+details[open] summary::after{content:"−"}
+details p{color:var(--mut);font-size:.9rem;margin-top:.7rem}
+
+.ctaband{background:linear-gradient(135deg,var(--green-d),#0F3B2E);color:#fff;border-radius:24px;padding:3.2rem 2.6rem;text-align:center;margin:0 auto}
+.ctaband h2{color:#fff;font-size:clamp(1.7rem,3.4vw,2.4rem);margin-bottom:.7rem}
+.ctaband p{color:rgba(255,255,255,.75);margin-bottom:1.6rem}
+.ctaband .btns{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap}
+
+.contact-box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:2.2rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:center;justify-content:space-between;box-shadow:var(--sh)}
+footer{background:var(--ink);color:rgba(255,255,255,.66);padding:3rem 0 2.4rem;font-size:.86rem;margin-top:5rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;align-items:center}
+footer a{color:rgba(255,255,255,.85);text-decoration:none}
+footer a:hover{color:var(--amber)}
+.offmodal{position:fixed;inset:0;background:rgba(10,52,40,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:90;padding:1rem}
+.offmodal.on{display:flex}
+.offbox{background:#fff;border-radius:20px;padding:1.8rem;max-width:480px;width:100%;position:relative;box-shadow:0 40px 90px -20px rgba(0,0,0,.4)}
+.offclose{position:absolute;top:.7rem;right:1rem;border:none;background:none;font-size:1.7rem;cursor:pointer;color:var(--mut);line-height:1}
+.off-opt{display:block;border:1.5px solid var(--line);border-radius:14px;padding:1rem 1.1rem;text-decoration:none;margin-bottom:.7rem;transition:border .2s,transform .2s}
+.off-opt:hover{border-color:var(--green);transform:translateY(-2px)}
+.off-opt b{display:block;font-size:1rem;color:var(--ink)}
+.off-opt span{font-size:.85rem;color:var(--mut)}
+.off-note{font-size:.78rem;color:var(--mut);background:var(--paper);border-radius:10px;padding:.6rem .8rem;margin:.2rem 0}
+.cmp{margin-top:2.6rem;overflow-x:auto;border-radius:16px}
+.cmp table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);min-width:560px}
+.cmp th,.cmp td{padding:.75rem 1rem;border-bottom:1px solid var(--line-2);font-size:.9rem;text-align:left}
+.cmp th{background:var(--ink);color:#fff;font-size:.82rem;letter-spacing:.02em}
+.cmp td:nth-child(2),.cmp td:nth-child(3),.cmp th:nth-child(2),.cmp th:nth-child(3){text-align:center}
+.cmp .y{color:var(--green);font-weight:800}
+.cmp .n{color:#B9B2A3}
 </style>
 </head>
 <body>
 
-<div class="nav">
-  <div class="nav-inner">
-    <div class="nav-brand">
-      <svg width="26" height="26" viewBox="0 0 40 40"><rect x="1" y="1" width="38" height="38" rx="8" fill="#0A3428"/><rect x="10" y="11.3" width="20" height="3.6" rx="1" fill="#9C7530"/><rect x="10" y="18.2" width="13" height="3.6" rx="1" fill="#E9D9B6"/><rect x="10" y="25.1" width="17" height="3.6" rx="1" fill="#9C7530"/></svg>
-      Sunu Paie
-    </div>
-    <div class="nav-links">
-      <a href="#calculs">Ce qui est calculé</a>
-      <a href="#editions">Éditions</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact">Contact</a>
-    </div>
-    <a class="btn-nav" href="#contact">Demander un accès</a>
+<nav id="nav"><div class="wrap">
+  <a class="logo" href="#">
+    <svg viewBox="0 0 40 40"><rect x="1" y="1" width="38" height="38" rx="10" fill="#0A3428"/><rect x="10" y="11.3" width="20" height="3.6" rx="1.8" fill="#9C7530"/><rect x="10" y="18.2" width="13" height="3.6" rx="1.8" fill="#E9D9B6"/><rect x="10" y="25.1" width="17" height="3.6" rx="1.8" fill="#9C7530"/></svg>
+    Sunu Paie
+  </a>
+  <div class="links">
+    <a href="#produit">Produit</a>
+    <a href="#video">Démo</a>
+    <a href="#tarifs">Tarifs</a>
+    <a href="#licences">Licences</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+    <a class="btn btn-a" data-link="app" target="_blank" rel="noopener" href="#">Demander un accès</a>
   </div>
-</div>
+</div></nav>
 
-<section class="hero">
-  <div class="wrap hero-grid">
+<header class="hero">
+  <div class="wrap">
     <div>
-      <div class="eyebrow">Gestion de la paie — Sénégal</div>
-      <h1>Le calcul complet de la paie sénégalaise, conforme au barème officiel.</h1>
-      <p class="lede">IPRES, impôt sur le revenu, TRIMF, CSS, CFCE, prime d'ancienneté, quotient familial : chaque cotisation est recalculée à chaque bulletin, salarié par salarié, mois par mois — sans formule à tenir à jour soi-même.</p>
-      <div class="hero-ctas">
-        <a class="btn btn-gold" href="#contact">Demander un accès</a>
-        <a class="btn btn-outline" href="#calculs">Voir le détail des calculs</a>
+      <span class="kicker rv">Gestion de la paie — Sénégal</span>
+      <h1 class="rv d1">La paie, calculée <em>juste</em>. Chaque mois.</h1>
+      <p class="sub rv d2">Sunu Paie réunit bulletins, déclarations, journal comptable et documents RH dans un logiciel conçu pour les entreprises sénégalaises — multi-utilisateurs, avec droits d'accès et journal d'activité. Sur téléphone, ordinateur et Windows.</p>
+      <div class="cta rv d3">
+        <a class="btn btn-a" data-link="app" target="_blank" rel="noopener" href="#">Demander un accès</a>
+        <a class="btn btn-g" href="#video">Voir la démo
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></a>
       </div>
-      <ul class="hero-facts">
-        <li>Barème IPRES, CSS, TRIMF et impôt sur le revenu tenus à jour</li>
-        <li>Bulletins imprimables, déclarations VRS/IPRES/CSS et journal comptable SAGE</li>
-        <li>Édition Cloud (multi-utilisateurs) ou Classique (poste local, hors ligne)</li>
+      <div class="ticks rv d3">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4 10-10"/></svg>Barème DGID &amp; IPRES à jour</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4 10-10"/></svg>Activation en 2 minutes</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4 10-10"/></svg>Cloud ou hors ligne</span>
+      </div>
+    </div>
+    <div class="stage rv d2">
+      <div class="browser">
+        <div class="bar"><i></i><i></i><i></i><span class="url">app.sunupaie — Tableau de bord</span></div>
+        <div class="b-body">
+          <div class="b-side">
+            <div class="it on"><span class="dot"></span>Tableau</div>
+            <div class="it"><span class="dot"></span>Salariés</div>
+            <div class="it"><span class="dot"></span>Saisie</div>
+            <div class="it"><span class="dot"></span>Bulletins</div>
+            <div class="it"><span class="dot"></span>Récap</div>
+            <div class="it"><span class="dot"></span>Paramètres</div>
+          </div>
+          <div class="b-main">
+            <div class="b-hero"><div class="l">Masse salariale — cumul janvier</div><div class="v">4 862 500 F</div></div>
+            <div class="b-kpis">
+              <div class="b-kpi"><div class="l">Salariés</div><div class="v">12</div></div>
+              <div class="b-kpi"><div class="l">Net à payer</div><div class="v">3 640 200</div></div>
+              <div class="b-kpi"><div class="l">Coût employeur</div><div class="v">5 690 000</div></div>
+            </div>
+            <div class="b-ledger">
+              <div class="lh"><span>Bulletin — Ndiaye Fatou</span><span>Juillet 2026</span></div>
+              <div class="lrow head"><span>Code</span><span>Libellé</span><span>Base</span><span>Gains</span><span>Ret.</span></div>
+              <div class="lrow"><span>001</span><span>Salaire de base</span><span>—</span><span>350 000</span><span></span></div>
+              <div class="lrow"><span>007</span><span>Prime d'anc. (4%)</span><span>350 000</span><span>14 000</span><span></span></div>
+              <div class="lrow"><span>014</span><span>IPRES RG</span><span>364 000</span><span></span><span>20 384</span></div>
+              <div class="lrow"><span>016</span><span>Impôt sur le revenu</span><span>364 000</span><span></span><span>12 900</span></div>
+              <div class="lrow net"><span></span><span>NET À PAYER</span><span></span><span>328 000</span><span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone2"><div class="scr">
+        <div class="ph">Pharmacie Sagna<small>Bulletin — Juillet 2026</small></div>
+        <div style="padding:9px 8px 6px;background:#fff">
+          <div style="font-size:6.8px;font-weight:800;color:var(--green-d);margin-bottom:5px">Ndiaye Fatou — Vendeuse</div>
+          <div class="row" style="padding:3px 0;border-bottom:1px solid var(--line-2)"><div><b style="font-size:6px">Salaire brut</b></div><span class="amt">364 000</span></div>
+          <div class="row" style="padding:3px 0;border-bottom:1px solid var(--line-2)"><div><b style="font-size:6px">IPRES RG</b></div><span class="amt">−20 384</span></div>
+          <div class="row" style="padding:3px 0;border-bottom:1px solid var(--line-2)"><div><b style="font-size:6px">Impôt sur le revenu</b></div><span class="amt">−12 900</span></div>
+          <div class="row" style="padding:5px 0 2px;font-weight:800"><div><b style="font-size:7px;color:var(--green-d)">Net à payer</b></div><span class="amt" style="color:var(--green);font-size:7.5px">328 000</span></div>
+        </div>
+        <div style="padding:7px 8px;background:var(--green-d);color:#fff;text-align:center;font-size:6px;font-weight:700;letter-spacing:.03em">✓ BULLETIN DISPONIBLE</div>
+      </div></div>
+    </div>
+  </div>
+</header>
+
+<div class="sectors"><div class="wrap rv">
+  <span class="lbl">Conçu pour</span>
+  <span class="chip">Pharmacies</span><span class="chip">PME &amp; commerces</span><span class="chip">Cabinets comptables</span><span class="chip">Restauration</span><span class="chip">Ateliers &amp; services</span><span class="chip">ONG &amp; associations</span><span class="chip">Groupes multi-sociétés</span>
+</div></div>
+
+<div class="stats"><div class="wrap">
+  <div class="stat rv"><b>5</b><span>cotisations calculées automatiquement</span></div>
+  <div class="stat rv d1"><b>1—5</b><span>parts fiscales gérées (IR &amp; TRIMF)</span></div>
+  <div class="stat rv d2"><b>3</b><span>déclarations générées en un clic (VRS, IPRES, CSS)</span></div>
+  <div class="stat rv d3"><b>2 min</b><span>pour activer une licence</span></div>
+</div></div>
+
+<section id="produit"><div class="wrap">
+  <span class="kicker rv">Le produit</span>
+  <h2 class="h2 rv d1">Un poste de pilotage complet, pas un simple calculateur.</h2>
+  <p class="lead rv d2">Chaque bulletin alimente les déclarations, le journal comptable et les documents RH. Une saisie, tout le reste suit — ancienneté, quotient familial et taux légaux recalculés à chaque mois.</p>
+
+  <div class="spot">
+    <div class="rv">
+      <h3>Le bulletin de paie, sans erreur de calcul.</h3>
+      <p>IPRES (RG et RC), impôt sur le revenu, TRIMF, CSS, CFCE : chaque cotisation est recalculée au taux exact en vigueur, sur la base du barème officiel de la DGID. La prime d'ancienneté et le quotient familial se mettent à jour tout seuls à partir de la date d'entrée et de la situation familiale.</p>
+      <ul class="ticklist">
+        <li>Bulletin conforme, prêt à imprimer ou exporter en PDF</li>
+        <li>Mode dédié pour les mois de congé (report automatique du brut du mois précédent)</li>
+        <li>13e mois, primes exceptionnelles, indemnités : tout est pris en charge</li>
+        <li>Modèle de bulletin personnalisable pour les entreprises ayant déjà leur propre mise en page</li>
       </ul>
     </div>
-    <div>
-      <div class="slip">
-        <div class="slip-head">
-          <div><div class="ent">Pharmacie Exemple</div><div class="adr">Dakar, Sénégal — NINEA 000000000</div></div>
-          <div class="titre">Bulletin de paie<br>Juillet 2026</div>
-        </div>
-        <div class="slip-id">
-          <div><span>Nom &amp; prénom</span><b>Ndiaye Fatou</b></div>
-          <div><span>Qualification</span><b>Vendeuse</b></div>
-          <div><span>Parts (IR/TRIMF)</span><b>1,5</b></div>
-        </div>
-        <div class="slip-body">
-          <div class="slip-row"><span class="code">001</span><span>Salaire de base</span><span class="amt">350 000 F</span></div>
-          <div class="slip-row"><span class="code">007</span><span>Prime d'ancienneté (4%)</span><span class="amt">14 000 F</span></div>
-          <div class="slip-row sub"><span class="code">013</span><span>Salaire brut</span><span class="amt">364 000 F</span></div>
-          <div class="slip-row"><span class="code">014</span><span>IPRES RG (5,6%)</span><span class="amt">20 384 F</span></div>
-          <div class="slip-row"><span class="code">016</span><span>Impôt sur le revenu</span><span class="amt">12 900 F</span></div>
-          <div class="slip-row"><span class="code">017</span><span>TRIMF</span><span class="amt">400 F</span></div>
-          <div class="slip-row net"><span class="code"></span><span>Net à payer</span><span class="amt">328 000 F</span></div>
-        </div>
-        <div class="slip-foot"><span>Coût total employeur : 393 156 F</span><span>Payé le ……………</span></div>
+    <div class="shot rv d1">
+      <div class="m-slip">
+        <div class="h"><div><b>Pharmacie Sagna</b><small>Ndiaye Fatou — Vendeuse</small></div><div class="r">Bulletin de paie<br>Juillet 2026</div></div>
+        <table>
+          <tr><th>Rubrique</th><th>Base</th><th>Montant</th></tr>
+          <tr><td>Salaire de base</td><td>—</td><td>350 000 F</td></tr>
+          <tr><td>Prime d'ancienneté (4%)</td><td>350 000 F</td><td>14 000 F</td></tr>
+          <tr><td>IPRES RG (5,6%)</td><td>364 000 F</td><td>−20 384 F</td></tr>
+          <tr><td>Impôt sur le revenu</td><td>364 000 F</td><td>−12 900 F</td></tr>
+        </table>
+        <div class="tot" style="padding:.5rem .8rem;background:#F1E6CC;font-weight:800;font-size:.78rem">Salaire brut : 364 000 F</div>
+        <div class="net" style="padding:.6rem .8rem;background:#0A3428;color:#fff;font-weight:800;font-size:.85rem">Net à payer : 328 000 F</div>
       </div>
+      <div class="cap">Bulletin — cotisations au taux exact en vigueur</div>
     </div>
   </div>
-</section>
 
-<section id="calculs">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Ce qui est calculé</div>
-      <h2>Chaque cotisation, au taux exact en vigueur.</h2>
-      <p>Les taux ci-dessous sont ceux appliqués par défaut à chaque bulletin. Ils restent modifiables si la réglementation évolue.</p>
+  <div class="spot">
+    <div class="rv">
+      <h3>Déclarations et journal comptable, générés pour vous.</h3>
+      <p>VRS, IPRES et CSS récapitulés mois par mois et sur l'année complète — prêts pour le dépôt auprès des organismes. Le journal de paie (débit/crédit, format SAGE) s'exporte en Excel en un clic, mois par mois ou pour l'année entière.</p>
+      <ul class="ticklist">
+        <li>Un tableau par déclaration, avec export Excel individuel ou global</li>
+        <li>Journal comptable SAGE prêt à importer, écart d'arrondi équilibré automatiquement</li>
+        <li>Historique des augmentations de salaire détecté automatiquement</li>
+        <li>Attestations et certificats de travail générés depuis la fiche du salarié</li>
+      </ul>
     </div>
-    <div style="overflow-x:auto">
-    <table class="rate-table" style="min-width:640px">
-      <thead><tr><th>Cotisation</th><th style="text-align:right">Part salariale</th><th style="text-align:right">Part patronale</th><th style="text-align:right">Plafond mensuel</th></tr></thead>
-      <tbody>
-        <tr><td>IPRES — Régime général (RG)</td><td class="amt">5,6 %</td><td class="amt">8,4 %</td><td class="amt">432 000 F</td></tr>
-        <tr><td>IPRES — Régime complémentaire (RC)</td><td class="amt">2,4 %</td><td class="amt">3,6 %</td><td class="amt">1 296 000 F</td></tr>
-        <tr><td>CSS — Allocations familiales</td><td class="amt">—</td><td class="amt">7 %</td><td class="amt">63 000 F</td></tr>
-        <tr><td>CSS — Accident du travail</td><td class="amt">—</td><td class="amt">3 %</td><td class="amt">63 000 F</td></tr>
-        <tr><td>CFCE</td><td class="amt">—</td><td class="amt">3 %</td><td class="amt">sur le brut total</td></tr>
-        <tr><td>TRIMF</td><td class="amt">selon barème et nombre de parts</td><td class="amt">—</td><td class="amt">—</td></tr>
-        <tr><td>Impôt sur le revenu (IR)</td><td class="amt">barème DGID, 1 à 5 parts</td><td class="amt">—</td><td class="amt">—</td></tr>
-        <tr><td>Prime d'ancienneté</td><td class="amt">2 % dès 2 ans, +1 %/an</td><td class="amt">—</td><td class="amt">—</td></tr>
-      </tbody>
-    </table>
+    <div class="shot rv d1">
+      <div class="m-dec">
+        <table>
+          <tr><th>Mois</th><th>IPRES RG</th><th>TRIMF</th><th>Total</th></tr>
+          <tr><td>Mai</td><td>48 384 F</td><td>400 F</td><td>72 976 F</td></tr>
+          <tr><td>Juin</td><td>48 384 F</td><td>400 F</td><td>72 976 F</td></tr>
+          <tr class="tot"><td>Total annuel</td><td>241 920 F</td><td>2 000 F</td><td>364 880 F</td></tr>
+        </table>
+      </div>
+      <div class="cap">Déclaration IPRES — export Excel en un clic</div>
     </div>
   </div>
-</section>
 
-<section>
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Fonctionnalités</div>
-      <h2>Au-delà du calcul du bulletin.</h2>
-      <p>La paie ne s'arrête pas au bulletin : déclarations, documents RH et suivi de l'équipe sont couverts.</p>
+  <div class="spot">
+    <div class="rv">
+      <h3>Toute votre équipe. Chacun ses droits.</h3>
+      <p>Invitez vos collaborateurs : chacun se connecte avec son propre compte, et vous décidez de ses droits, entreprise par entreprise. Tout est synchronisé et sauvegardé automatiquement, et la licence est vérifiée de façon infalsifiable.</p>
+      <ul class="ticklist">
+        <li>Multi-utilisateurs : un compte e-mail + mot de passe par collaborateur</li>
+        <li>Droits détaillés : salariés, modification, export, déclarations, paramètres — module par module</li>
+        <li>Journal d'activité : qui a créé, modifié ou supprimé quoi</li>
+        <li>Version 100 % hors ligne disponible (Sunu Paie Classique)</li>
+      </ul>
     </div>
-    <div class="feat-list">
-      <div class="feat"><div class="num">Salariés</div><h3>Fiches complètes</h3><p>État civil, situation familiale, enfants à charge, type de contrat, période d'essai, date d'entrée — parts fiscales et taux d'ancienneté recalculés automatiquement à partir de ces informations.</p></div>
-      <div class="feat"><div class="num">Saisie mensuelle</div><h3>Salaire, primes, congés</h3><p>Sursalaire, heures supplémentaires, primes exceptionnelles, 13e mois, indemnités de transport, retenues diverses (avances, prêts, Tabaski) — et un mode dédié pour les mois de congé.</p></div>
-      <div class="feat"><div class="num">Déclarations</div><h3>VRS, IPRES, CSS</h3><p>Récapitulatifs mensuels et annuels générés automatiquement, prêts pour le dépôt auprès des organismes concernés.</p></div>
-      <div class="feat"><div class="num">Comptabilité</div><h3>Journal SAGE</h3><p>Écritures débit/crédit par compte, mois par mois ou sur l'année complète, exportées en Excel.</p></div>
-      <div class="feat"><div class="num">Documents RH</div><h3>Attestations, certificats</h3><p>Attestation de travail et certificat de travail générés à partir de la fiche du salarié, prêts à imprimer.</p></div>
-      <div class="feat"><div class="num">Suivi</div><h3>Journal d'activité</h3><p>Historique des créations, modifications et suppressions sur chaque entreprise — qui a fait quoi, et quand.</p></div>
-      <div class="feat"><div class="num">Exports</div><h3>Excel, tableau par tableau</h3><p>Chaque tableau du récapitulatif s'exporte individuellement, ou tous ensemble en un seul fichier.</p></div>
-      <div class="feat"><div class="num">Multi-entreprises</div><h3>Droits par utilisateur</h3><p>Plusieurs sociétés gérées depuis un seul compte, avec des droits d'accès différents pour chaque collaborateur (édition Cloud).</p></div>
+    <div class="shot rv d1">
+      <div class="m-sync">
+        <div class="dev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><b>Téléphone</b></div>
+        <div class="link-anim"></div>
+        <div class="cloud-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 18a4.5 4.5 0 100-9 6 6 0 00-11.6 1.6A4 4 0 006.5 18h11z"/></svg></div>
+        <div class="link-anim"></div>
+        <div class="dev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="4" width="19" height="12.5" rx="2"/><path d="M8 20.5h8M12 16.5v4"/></svg><b>Ordinateur</b></div>
+      </div>
+      <div class="cap">Synchronisation cloud en temps réel</div>
     </div>
   </div>
-</section>
 
-<section id="editions">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Deux éditions</div>
-      <h2>Même moteur de calcul, deux façons de l'installer.</h2>
-      <p>Le choix dépend de votre organisation : une seule personne sur un poste, ou une équipe répartie.</p>
-    </div>
-    <div style="overflow-x:auto">
-    <table class="cmp" style="min-width:600px">
-      <thead>
-        <tr>
-          <th></th>
-          <th class="hcol">Classique</th>
-          <th class="hcol hi">Cloud</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="lbl">Connexion internet requise au quotidien</td><td class="no">Non</td><td class="yes">Oui</td></tr>
-        <tr><td class="lbl">Données stockées</td><td>Sur l'ordinateur installé</td><td>Hébergées, accessibles de partout</td></tr>
-        <tr><td class="lbl">Nombre d'utilisateurs</td><td>Un poste, un mot de passe local</td><td>Plusieurs comptes, droits différents chacun</td></tr>
-        <tr><td class="lbl">Sauvegardes</td><td>Manuelles (export .json)</td><td>Automatiques</td></tr>
-        <tr><td class="lbl">Mises à jour</td><td>Réinstallation d'une nouvelle version</td><td>Automatiques</td></tr>
-        <tr><td class="lbl">Bulletins, déclarations, journal SAGE, documents RH</td><td class="yes">Oui</td><td class="yes">Oui</td></tr>
-      </tbody>
-      <tfoot><tr><td colspan="3" class="cmp-cta"><a class="btn btn-gold" href="#contact">Demander un accès — préciser l'édition souhaitée</a></td></tr></tfoot>
-    </table>
+  <div class="gridf">
+    <div class="gf rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20V10M18 20V4M6 20v-6"/></svg></div><h3>Fiches salariés complètes</h3><p>État civil, situation familiale, type de contrat, période d'essai — parts fiscales et ancienneté recalculées automatiquement.</p></div>
+    <div class="gf rv d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><h3>Congés gérés simplement</h3><p>Un mode dédié bascule automatiquement le calcul du mois en indemnité de congé, sans ressaisie.</p></div>
+    <div class="gf rv d2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5V4.5A2.5 2.5 0 016.5 2H18a2 2 0 012 2v13.5M4 19.5A2.5 2.5 0 006.5 22H18a2 2 0 002-2v-1.5"/></svg></div><h3>Documents RH en un clic</h3><p>Attestation et certificat de travail générés depuis la fiche du salarié, prêts à imprimer.</p></div>
+    <div class="gf rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg></div><h3>Rechercher &amp; filtrer</h3><p>Retrouvez n'importe quel salarié en un instant, même sur les grandes équipes.</p></div>
+    <div class="gf rv d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M3 12h18"/></svg></div><h3>Import Excel</h3><p>Importez vos états récapitulatifs existants — colonnes reconnues automatiquement, quel que soit leur ordre.</p></div>
+    <div class="gf rv d2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 7L9 18l-5-5"/></svg></div><h3>Modèle de bulletin personnalisé</h3><p>Gardez votre mise en page existante si votre entreprise en a déjà une — les calculs restent ceux de Sunu Paie.</p></div>
+  </div>
+</div></section>
+
+<section id="video" class="video"><div class="wrap" style="text-align:center">
+  <span class="kicker rv" style="color:var(--mint)">Démonstration</span>
+  <h2 class="h2 rv d1" style="margin:0 auto 1rem">Voyez Sunu Paie en action.</h2>
+  <p class="lead rv d2" style="margin:0 auto;color:rgba(255,255,255,.65)">Trois minutes pour voir un bulletin calculé, une déclaration générée et un salarié ajouté.</p>
+  <div class="vframe rv d3">
+    <iframe id="viframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <div class="vposter" id="vposter">
+      <div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+      <b>Voir la démonstration</b>
+      <small id="vhint">3 minutes</small>
     </div>
   </div>
-</section>
+</div></section>
 
-<section id="faq">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Questions fréquentes</div>
-      <h2>Avant de vous décider.</h2>
+<section id="tarifs"><div class="wrap">
+  <span class="kicker rv">Tarifs</span>
+  <h2 class="h2 rv d1">Deux éditions, un seul moteur de calcul.</h2>
+  <p class="lead rv d2">Choisissez selon votre organisation : une équipe répartie avec des accès différents, ou un poste unique fonctionnant hors ligne.</p>
+  <div class="plans">
+    <div class="plan star rv">
+      <h3>Sunu Paie Cloud</h3>
+      <!-- TODO-PRIX : votre tarif Cloud -->
+      <div class="price">Sur devis</div>
+      <div class="per">par entreprise, facturation annuelle</div>
+      <ul>
+        <li>Accessible de partout, à plusieurs</li>
+        <li>Multi-utilisateurs avec droits d'accès détaillés</li>
+        <li>Sauvegarde automatique et sécurisée</li>
+        <li>Mises à jour du barème incluses</li>
+        <li>Journal d'activité et traçabilité complète</li>
+      </ul>
+      <button class="btn btn-p" style="width:100%" onclick="chooseOffer('cloud')">Choisir Cloud</button>
     </div>
-    <div class="faq-list">
-      <div class="faq-item"><h3>Les taux et barèmes sont-ils vérifiés ?</h3><p>Oui — les taux IPRES, CSS, CFCE et le barème de l'impôt sur le revenu sont ceux en vigueur, comparés ligne par ligne à de vrais bulletins de paie sénégalais lors de la mise en place.</p></div>
-      <div class="faq-item"><h3>Que se passe-t-il si la réglementation change ?</h3><p>Les taux sont modifiables dans les paramètres de l'entreprise. Pour l'édition Cloud, les mises à jour du barème sont déployées automatiquement.</p></div>
-      <div class="faq-item"><h3>Mes données sont-elles partagées entre plusieurs entreprises ?</h3><p>Non. Chaque entreprise a ses propres salariés, saisies et paramètres, isolés des autres — y compris si vous en gérez plusieurs depuis le même compte.</p></div>
-      <div class="faq-item"><h3>Puis-je changer d'édition plus tard ?</h3><p>Oui, une sauvegarde exportée d'une édition peut être réimportée dans l'autre.</p></div>
-      <div class="faq-item"><h3>Que se passe-t-il si je ne renouvelle pas ma licence ?</h3><p>L'accès se bloque à l'expiration, mais aucune donnée n'est supprimée. Un renouvellement redonne immédiatement accès à tout.</p></div>
+    <div class="plan rv d2">
+      <h3>Sunu Paie Classique <span style="font-size:.7rem;color:var(--mut);font-weight:800;letter-spacing:.06em">MONOPOSTE</span></h3>
+      <!-- TODO-PRIX : votre tarif Classique -->
+      <div class="price">Sur devis</div>
+      <div class="per">par an et par entreprise</div>
+      <ul>
+        <li>Installation locale sur un seul ordinateur</li>
+        <li>Fonctionne 100 % hors ligne au quotidien</li>
+        <li>Données stockées localement — confidentialité maximale</li>
+        <li>Bulletins, déclarations et documents RH inclus</li>
+        <li class="no">Sauvegarde cloud &amp; multi-utilisateurs</li>
+      </ul>
+      <button class="btn btn-o" style="width:100%" onclick="chooseOffer('classique')">Choisir Classique</button>
     </div>
   </div>
-</section>
+  <div class="cmp rv">
+   <table>
+    <tr><th>Fonctionnalités</th><th>Classique</th><th>Cloud</th></tr>
+    <tr><td>Bulletins, déclarations, journal comptable, documents RH</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Fonctionne 100 % hors ligne</td><td class="y">✓</td><td class="n">Internet requis</td></tr>
+    <tr><td>Utilisateurs</td><td>Un poste, un mot de passe local</td><td class="y">Multi-comptes avec droits détaillés</td></tr>
+    <tr><td>Appareils</td><td>1 ordinateur</td><td class="y">Téléphone + ordinateur, synchronisés</td></tr>
+    <tr><td>Sauvegarde des données</td><td>Manuelle (export .json)</td><td class="y">Automatique</td></tr>
+    <tr><td>Mises à jour du barème légal</td><td>Manuelles</td><td class="y">Automatiques</td></tr>
+    <tr><td>Journal d'activité &amp; traçabilité</td><td class="n">—</td><td class="y">✓</td></tr>
+   </table>
+  </div>
+</div></section>
 
-<div class="wrap cta-final" id="contact">
-  <div class="cta-box">
+<section id="licences" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <span class="kicker rv">Comment ça marche</span>
+  <h2 class="h2 rv d1">Une licence honnête, activée en 2 minutes.</h2>
+  <div class="tl">
+    <div class="tls rv"><div class="n">1</div><h3>Vous nous contactez</h3><p>Par WhatsApp ou e-mail, avec le nom exact de votre entreprise. Nous générons votre clé personnelle.</p></div>
+    <div class="tls rv d1"><div class="n">2</div><h3>Vous activez</h3><p>À l'inscription, l'assistant vous demande le nom de l'entreprise puis la clé. C'est tout — l'application est à vous.</p></div>
+    <div class="tls rv d2"><div class="n">3</div><h3>Vous renouvelez à l'échéance</h3><p>Avant l'échéance, nous vous envoyons une nouvelle clé. Vos données ne sont jamais perdues, même licence expirée.</p></div>
+  </div>
+  <div class="keybox rv">
     <div>
-      <h2>Demander un accès</h2>
-      <p>Précisez le nom de votre entreprise et l'édition souhaitée (Cloud ou Classique) — une licence vous sera transmise après échange.</p>
+      <div style="font-weight:800;font-size:1.05rem;margin-bottom:.3rem">Votre clé ressemble à ceci :</div>
+      <code>SUNU-CLOUD-C9LK-4F2A-8B1E</code>
     </div>
-    <div>
-      <a class="btn btn-gold" href="mailto:contact@sunupaie.sn?subject=Demande%20d'acc%C3%A8s%20Sunu%20Paie" style="width:100%;justify-content:center">contact@sunupaie.sn</a>
-    </div>
+    <p>Chaque clé est cryptographiquement liée au nom de votre entreprise : elle ne fonctionne pour personne d'autre — vérifiable même hors ligne.</p>
   </div>
-</div>
+</div></section>
 
-<footer>
-  <div class="wrap footer-inner">
-    <div>© <span id="year"></span> Sunu Paie</div>
-    <div>Gestion de la paie au Sénégal</div>
+<section id="faq"><div class="wrap">
+  <span class="kicker rv">FAQ</span>
+  <h2 class="h2 rv d1">Questions fréquentes</h2>
+  <div class="faqgrid">
+    <details class="rv"><summary>Les taux et barèmes sont-ils vérifiés ?</summary><p>Oui — les taux IPRES, CSS, CFCE et le barème de l'impôt sur le revenu sont ceux en vigueur, comparés ligne par ligne à de vrais bulletins de paie sénégalais lors de la mise en place.</p></details>
+    <details class="rv d1"><summary>Sunu Paie fonctionne-t-il sans connexion Internet ?</summary><p>Sunu Paie Classique fonctionne entièrement hors ligne après installation : idéal si votre connexion est irrégulière. Sunu Paie Cloud nécessite Internet pour synchroniser vos données entre appareils — c'est le prix de la sauvegarde automatique.</p></details>
+    <details class="rv"><summary>Sur quels appareils puis-je l'utiliser ?</summary><p>Téléphone, tablette et ordinateur pour l'édition Cloud (installable depuis le navigateur). Une version Windows avec installateur classique (.exe) est proposée pour l'édition Classique.</p></details>
+    <details class="rv d1"><summary>Mes données sont-elles en sécurité ?</summary><p>Avec Classique, vos données ne quittent jamais votre ordinateur. Avec Cloud, elles sont hébergées avec un cloisonnement strict par entreprise, et votre compte est protégé par mot de passe.</p></details>
+    <details class="rv"><summary>Que se passe-t-il quand ma licence expire ?</summary><p>L'application se met en pause mais vos données sont intégralement conservées. Dès que vous entrez la clé de renouvellement, tout redémarre exactement où vous en étiez.</p></details>
+    <details class="rv d1"><summary>Puis-je importer mes données existantes ?</summary><p>Oui. Sunu Paie importe vos états récapitulatifs Excel (.xlsx) existants — les colonnes sont reconnues automatiquement par leur intitulé, quel que soit leur ordre.</p></details>
+    <details class="rv"><summary>Puis-je passer de Classique à Cloud ?</summary><p>Oui : exportez la sauvegarde depuis votre installation Classique, importez-la dans votre espace Cloud — salariés, saisies, tout est repris.</p></details>
+    <details class="rv d1"><summary>Puis-je donner des accès à mes collaborateurs ?</summary><p>Oui, sur Sunu Paie Cloud : l'administrateur décide des droits de chaque collaborateur, entreprise par entreprise (salariés, modification, export, déclarations, paramètres), et chaque action est tracée dans le journal d'activité.</p></details>
   </div>
-</footer>
+</div></section>
+
+<div class="wrap"><div class="ctaband rv">
+  <h2>Prêt à simplifier votre paie ?</h2>
+  <p>Écrivez-nous pour obtenir un accès — édition Cloud ou Classique, selon votre besoin.</p>
+  <div class="btns">
+    <a class="btn btn-a" data-link="app" target="_blank" rel="noopener" href="#">Demander un accès</a>
+    <a class="btn btn-g" href="#telecharger">Voir les installations</a>
+  </div>
+</div></div>
+
+<section id="telecharger"><div class="wrap">
+  <span class="kicker rv">Installer Sunu Paie</span>
+  <h2 class="h2 rv d1">Choisissez votre mode d'installation.</h2>
+  <p class="lead rv d2" id="os-line">Sur cet appareil, nous vous recommandons : <span id="os-hint">…</span></p>
+  <div class="dl-cards">
+    <div class="dl rv">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></div>
+      <h3>Application web</h3>
+      <p>Ouvrez Sunu Paie dans votre navigateur et ajoutez-le à l'écran d'accueil : il se comporte ensuite comme une application installée.</p>
+      <a class="btn btn-a" data-link="app" target="_blank" rel="noopener" href="#">Ouvrir Sunu Paie</a>
+      <span class="note">Pour Sunu Paie Cloud — mises à jour automatiques</span>
+    </div>
+    <div class="dl rv d1">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+      <h3>Windows (.exe)</h3>
+      <p>Pour Sunu Paie Classique (monoposte) : icône sur le Bureau, menu Démarrer, fonctionnement 100 % hors ligne. Windows 10 ou 11.</p>
+      <a class="btn btn-p" data-link="exe" href="#" id="btn-exe">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        Télécharger pour Windows</a>
+      <span class="note" id="exe-note">Le téléchargement démarre immédiatement</span>
+    </div>
+    <div class="dl rv d2">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg></div>
+      <h3>Déjà client ?</h3>
+      <p>Connectez-vous à votre espace, ou entrez votre clé de renouvellement dans Réglages → Licence.</p>
+      <a class="btn btn-o" data-link="app" target="_blank" rel="noopener" href="#">Me connecter</a>
+      <span class="note">Vos données vous attendent</span>
+    </div>
+  </div>
+</div></section>
+
+<section id="contact" style="padding-top:0"><div class="wrap">
+  <span class="kicker rv">Contact</span>
+  <h2 class="h2 rv d1">Parlons de votre entreprise.</h2>
+  <div class="contact-box rv d2">
+    <div>
+      <h3 style="font-weight:800;font-size:1.15rem;margin-bottom:.3rem">Une question ? Une licence ? Une démonstration ?</h3>
+      <p style="color:var(--mut);font-size:.95rem">Réponse rapide par WhatsApp, du lundi au samedi.</p>
+    </div>
+    <div style="display:flex;gap:.9rem;flex-wrap:wrap">
+      <a class="btn btn-p" data-link="wa" target="_blank" rel="noopener" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm5.5 14.2c-.24.66-1.38 1.26-1.9 1.3-.5.05-1.13.24-3.8-.8-3.2-1.26-5.24-4.5-5.4-4.7-.16-.21-1.3-1.72-1.3-3.28 0-1.56.82-2.32 1.1-2.64.3-.32.64-.4.85-.4h.61c.2 0 .46-.04.71.55.26.6.87 2.1.95 2.25.08.16.13.35.02.56-.1.21-.16.34-.31.53-.16.18-.33.41-.47.55-.16.15-.32.32-.14.63.18.32.8 1.31 1.72 2.13 1.18 1.05 2.17 1.38 2.48 1.53.31.16.5.13.68-.08.18-.2.78-.9.99-1.21.2-.32.41-.26.69-.16.28.11 1.8.85 2.1 1 .31.16.51.24.59.37.07.13.07.76-.17 1.42z"/></svg>
+        WhatsApp</a>
+      <a class="btn btn-o" data-link="mail" href="#">E-mail</a>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div style="display:flex;align-items:center;gap:.55rem;font-weight:800;color:#fff">
+    <svg viewBox="0 0 40 40" width="28" style="border-radius:8px"><rect width="40" height="40" rx="10" fill="#0A3428"/><rect x="10" y="11.3" width="20" height="3.6" rx="1.8" fill="#9C7530"/><rect x="10" y="18.2" width="13" height="3.6" rx="1.8" fill="#E9D9B6"/><rect x="10" y="25.1" width="17" height="3.6" rx="1.8" fill="#9C7530"/></svg>
+    Sunu Paie — la paie, calculée juste.
+  </div>
+  <div>
+    <a href="#produit">Produit</a> · <a href="#tarifs">Tarifs</a> · <a href="#licences">Licences</a> · <a href="#faq">FAQ</a> · <a href="#contact">Contact</a>
+  </div>
+</div></footer>
+
+<div class="offmodal" id="offmodal"><div class="offbox">
+  <button class="offclose" onclick="closeOffer()">×</button>
+  <h3 id="off-title" style="font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1.3rem;margin-bottom:1rem;padding-right:1.5rem">Choisissez votre installation</h3>
+  <div id="off-opts"></div>
+</div></div>
 
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
+(function(){
+  var L = window.LIENS || {};
+  var urls = {
+    app: L.app || '#',
+    exe: L.exe || '#',
+    wa:  L.wa ? ('https://wa.me/' + L.wa + '?text=' + encodeURIComponent('Bonjour, je souhaite des informations sur Sunu Paie')) : '#',
+    mail:L.mail ? ('mailto:' + L.mail + '?subject=' + encodeURIComponent('Demande d\u2019informations Sunu Paie')) : '#'
+  };
+  document.querySelectorAll('[data-link]').forEach(function(a){
+    var k = a.getAttribute('data-link');
+    a.href = urls[k] || '#';
+    if(k === 'exe'){ a.setAttribute('download',''); }
+  });
+  if((urls.app === '#' ) && document.getElementById('exe-note')){
+    document.getElementById('exe-note').textContent = 'Configuration requise : renseignez window.LIENS en haut du fichier';
+  }
+  var om=document.getElementById('offmodal');
+  window.closeOffer=function(){om.classList.remove('on');};
+  window.chooseOffer=function(kind){
+    var wrap=document.getElementById('off-opts');
+    var waBtn='<a class="btn btn-p" style="width:100%;margin-top:.5rem" target="_blank" rel="noopener" href="'+urls.wa+'">Obtenir ma licence par WhatsApp</a>';
+    if(kind==='cloud'){
+      document.getElementById('off-title').textContent='Sunu Paie Cloud — votre installation';
+      wrap.innerHTML='<a class="off-opt" target="_blank" rel="noopener" href="'+urls.app+'"><b>Application web (PWA)</b><span>Téléphone et ordinateur — synchronisée, mises à jour automatiques.</span></a>'
+        +'<div class="off-note">La version Cloud s\u2019utilise via l\u2019application web : aucun installateur n\u2019est nécessaire, vos données vous suivent sur tous vos appareils.</div>'+waBtn;
+    }else{
+      document.getElementById('off-title').textContent='Sunu Paie Classique — votre installation';
+      var o='<a class="off-opt" href="'+urls.exe+'" download><b>Windows (.exe)</b><span>Installation locale sur votre ordinateur — 100 % hors ligne. Recommandé.</span></a>';
+      if(L.classique && L.classique.length>4){o+='<a class="off-opt" target="_blank" rel="noopener" href="'+L.classique+'"><b>Application web hors ligne (PWA)</b><span>Données stockées sur l\u2019appareil.</span></a>';}
+      wrap.innerHTML=o+'<div class="off-note">Monoposte : un seul utilisateur, données stockées localement, sans sauvegarde cloud ni synchronisation.</div>'+waBtn;
+    }
+    om.classList.add('on');
+  };
+  om.addEventListener('click',function(e){if(e.target===om)window.closeOffer();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeOffer();});
+  var hint = document.getElementById('os-hint');
+  if(hint){
+    var ua = navigator.userAgent;
+    if(/Windows/i.test(ua)) hint.textContent = 'la version Windows (.exe) ou l\u2019application web.';
+    else if(/Android|iPhone|iPad/i.test(ua)) hint.textContent = 'l\u2019application web, à ajouter à votre écran d\u2019accueil.';
+    else hint.textContent = 'l\u2019application web, installable depuis votre navigateur.';
+  }
+  var poster = document.getElementById('vposter');
+  if(poster){
+    poster.addEventListener('click', function(){
+      if(L.video && L.video.length > 5){
+        var f = document.getElementById('viframe');
+        f.src = 'https://www.youtube-nocookie.com/embed/' + L.video + '?autoplay=1&rel=0';
+        f.style.display = 'block';
+        poster.style.display = 'none';
+      }else{
+        document.getElementById('vhint').textContent = 'Vidéo bientôt disponible.';
+      }
+    });
+  }
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function(){ nav.classList.toggle('scr', window.scrollY > 12); }, {passive:true});
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  }else{
+    document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
 </script>
 </body>
 </html>
