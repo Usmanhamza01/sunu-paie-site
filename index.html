@@ -30,13 +30,14 @@
    mail      : votre adresse e-mail de contact
 ================================================================ */
 window.LIENS = {
-  app:          "https://sunu-paie-cloud.pages.dev/",   
+ app:          "https://sunu-paie-cloud.pages.dev/",   
   classique:    "",  
   exeClassique: "https://github.com/Usmanhamza01/sunu-paie-release/releases/latest/download/Sunu.Paie.Classique.Setup.1.0.0.exe",
   exeCloud:     "https://github.com/Usmanhamza01/sunu-paie-release/releases/latest/download/Sunu.Paie.Cloud.Setup.1.0.0.exe",   
   video:        "",
   wa:           "221709888109",  
   mail:         "contact@sunupaie.sn"
+
 };
 </script>
 
@@ -290,7 +291,7 @@ footer a:hover{color:var(--amber)}
     <a href="#licences">Licences</a>
     <a href="#faq">FAQ</a>
     <a href="#contact">Contact</a>
-    <a class="btn btn-a" data-link="app" target="_blank" rel="noopener" href="#">Demander un accès</a>
+    <a class="btn btn-a" href="#" onclick="event.preventDefault(); chooseContact();">Demander un accès</a>
   </div>
 </div></nav>
 
@@ -301,7 +302,7 @@ footer a:hover{color:var(--amber)}
       <h1 class="rv d1">La paie, calculée <em>juste</em>. Chaque mois.</h1>
       <p class="sub rv d2">Sunu Paie réunit bulletins, déclarations, journal comptable et documents RH dans un logiciel conçu pour les entreprises sénégalaises — multi-utilisateurs, avec droits d'accès et journal d'activité. Sur téléphone, ordinateur et Windows.</p>
       <div class="cta rv d3">
-        <a class="btn btn-a" data-link="app" target="_blank" rel="noopener" href="#">Demander un accès</a>
+        <a class="btn btn-a" href="#" onclick="event.preventDefault(); chooseContact();">Demander un accès</a>
         <a class="btn btn-g" href="#video">Voir la démo
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></a>
       </div>
@@ -557,7 +558,7 @@ footer a:hover{color:var(--amber)}
   <h2>Prêt à simplifier votre paie ?</h2>
   <p>Écrivez-nous pour obtenir un accès — édition Cloud ou Classique, selon votre besoin.</p>
   <div class="btns">
-    <a class="btn btn-a" data-link="app" target="_blank" rel="noopener" href="#">Demander un accès</a>
+    <a class="btn btn-a" href="#" onclick="event.preventDefault(); chooseContact();">Demander un accès</a>
     <a class="btn btn-g" href="#telecharger">Voir les installations</a>
   </div>
 </div></div>
@@ -669,6 +670,13 @@ footer a:hover{color:var(--amber)}
   }
   var om=document.getElementById('offmodal');
   window.closeOffer=function(){om.classList.remove('on');};
+  window.chooseContact=function(){
+    document.getElementById('off-title').textContent='Demander un accès';
+    document.getElementById('off-opts').innerHTML =
+      '<a class="off-opt" target="_blank" rel="noopener" href="'+urls.wa+'"><b>WhatsApp</b><span>Réponse rapide, du lundi au samedi.</span></a>'
+      +'<a class="off-opt" href="'+urls.mail+'"><b>E-mail</b><span>'+(L.mail||'')+'</span></a>';
+    om.classList.add('on');
+  };
   window.chooseOffer=function(kind){
     var wrap=document.getElementById('off-opts');
     var waBtn='<a class="btn btn-p" style="width:100%;margin-top:.5rem" target="_blank" rel="noopener" href="'+urls.wa+'">Obtenir ma licence par WhatsApp</a>';
