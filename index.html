@@ -15,22 +15,28 @@
    ================================================================
    app       : adresse de Sunu Paie Cloud (déployée sur Cloudflare Pages)
    classique : (optionnel) URL d'une version web hors ligne de Classique — laissez "" si non applicable
-   exe       : lien direct de l'installateur Windows de Sunu Paie Classique.
-               Conseil pro : publiez le .exe dans GitHub Releases avec un nom
-               fixe ; le lien .../releases/latest/download/... pointera alors
-               TOUJOURS vers la dernière version, sans jamais retoucher le site.
+   exeClassique : lien direct de l'installateur Windows de Sunu Paie Classique
+                  (fonctionne hors ligne, données stockées localement).
+   exeCloud     : lien direct de l'installateur Windows de Sunu Paie Cloud
+                  (simple raccourci vers l'application en ligne — connexion
+                  internet toujours nécessaire pour l'utiliser).
+                  Conseil pro pour les deux : publiez vos .exe dans GitHub
+                  Releases avec un nom fixe ; le lien
+                  .../releases/latest/download/... pointera alors TOUJOURS
+                  vers la dernière version, sans jamais retoucher le site.
    video     : ID YouTube de votre démo (les 11 caractères après watch?v=)
                Laissez "" tant que la vidéo n'est pas prête.
    wa        : numéro WhatsApp au format international, sans + ni espaces
    mail      : votre adresse e-mail de contact
 ================================================================ */
 window.LIENS = {
-  app:       "",   // ex: "https://sunu-paie-cloud.pages.dev/"
-  classique: "",
-  exe:       "",   // ex: lien GitHub Releases vers Sunu-Paie-Classique-Setup.exe
-  video:     "",
-  wa:        "",   // ex: "221771234567"
-  mail:      "contact@sunupaie.sn"
+  app:          "",   // ex: "https://sunu-paie-cloud.pages.dev/"
+  classique:    "",   
+  exeClassique: "",   // ex: https://github.com/Usmanhamza01/sunu-paie-release/releases/download/V1.00/Sunu.Paie.Classique.Setup.1.0.0.exe
+  exeCloud:     "",   // ex: https://github.com/Usmanhamza01/sunu-paie-release/releases/download/V1.00/Sunu.Paie.Cloud.Setup.1.0.0.exe
+  video:        "",
+  wa:           "",   // ex: "221709888109"
+  mail:         "contact@sunupaie.sn"
 };
 </script>
 
@@ -558,31 +564,54 @@ footer a:hover{color:var(--amber)}
 
 <section id="telecharger"><div class="wrap">
   <span class="kicker rv">Installer Sunu Paie</span>
-  <h2 class="h2 rv d1">Choisissez votre mode d'installation.</h2>
-  <p class="lead rv d2" id="os-line">Sur cet appareil, nous vous recommandons : <span id="os-hint">…</span></p>
-  <div class="dl-cards">
+  <h2 class="h2 rv d1">Choisissez d'abord votre édition, puis votre mode d'installation.</h2>
+  <p class="lead rv d2">Les options ci-dessous changent selon l'édition choisie — Cloud et Classique ne s'installent pas de la même façon.</p>
+  <div class="btn-row rv" style="margin:1.6rem 0 2rem">
+    <button class="btn btn-p" id="dl-tab-cloud" onclick="showDlEdition('cloud')">Sunu Paie Cloud</button>
+    <button class="btn btn-o" id="dl-tab-classique" onclick="showDlEdition('classique')">Sunu Paie Classique</button>
+  </div>
+
+  <div id="dl-cloud" class="dl-cards">
     <div class="dl rv">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></div>
       <h3>Application web</h3>
-      <p>Ouvrez Sunu Paie dans votre navigateur et ajoutez-le à l'écran d'accueil : il se comporte ensuite comme une application installée.</p>
+      <p>Ouvrez Sunu Paie dans votre navigateur et ajoutez-le à l'écran d'accueil : il se comporte ensuite comme une application installée. Mises à jour automatiques.</p>
       <a class="btn btn-a" data-link="app" target="_blank" rel="noopener" href="#">Ouvrir Sunu Paie</a>
-      <span class="note">Pour Sunu Paie Cloud — mises à jour automatiques</span>
+      <span class="note">Fonctionne sur téléphone, tablette et ordinateur</span>
     </div>
     <div class="dl rv d1">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
       <h3>Windows (.exe)</h3>
-      <p>Pour Sunu Paie Classique (monoposte) : icône sur le Bureau, menu Démarrer, fonctionnement 100 % hors ligne. Windows 10 ou 11.</p>
-      <a class="btn btn-p" data-link="exe" href="#" id="btn-exe">
+      <p>Une icône sur le Bureau qui ouvre Sunu Paie Cloud dans sa propre fenêtre. Connexion internet toujours nécessaire — aucune donnée stockée sur cet ordinateur.</p>
+      <a class="btn btn-p" data-link="exeCloud" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        Télécharger pour Windows</a>
+      <span class="note">Windows 10 ou 11</span>
+    </div>
+    <div class="dl rv d2">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg></div>
+      <h3>Déjà client Cloud ?</h3>
+      <p>Connectez-vous directement à votre espace — vos entreprises et salariés vous attendent.</p>
+      <a class="btn btn-o" data-link="app" target="_blank" rel="noopener" href="#">Me connecter</a>
+      <span class="note">Vos données vous attendent</span>
+    </div>
+  </div>
+
+  <div id="dl-classique" class="dl-cards" style="display:none">
+    <div class="dl rv">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+      <h3>Windows (.exe)</h3>
+      <p>Icône sur le Bureau, menu Démarrer, fonctionnement 100 % hors ligne — vos données restent sur cet ordinateur. Windows 10 ou 11.</p>
+      <a class="btn btn-p" data-link="exeClassique" href="#" id="btn-exe">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
         Télécharger pour Windows</a>
       <span class="note" id="exe-note">Le téléchargement démarre immédiatement</span>
     </div>
-    <div class="dl rv d2">
+    <div class="dl rv d1">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg></div>
-      <h3>Déjà client ?</h3>
-      <p>Connectez-vous à votre espace, ou entrez votre clé de renouvellement dans Réglages → Licence.</p>
-      <a class="btn btn-o" data-link="app" target="_blank" rel="noopener" href="#">Me connecter</a>
-      <span class="note">Vos données vous attendent</span>
+      <h3>Déjà client Classique ?</h3>
+      <p>Ouvrez l'application déjà installée sur votre ordinateur. Pour renouveler votre licence : Réglages → Licence, puis entrez votre nouvelle clé.</p>
+      <span class="note">Aucune connexion internet requise pour l'ouvrir</span>
     </div>
   </div>
 </div></section>
@@ -625,14 +654,15 @@ footer a:hover{color:var(--amber)}
   var L = window.LIENS || {};
   var urls = {
     app: L.app || '#',
-    exe: L.exe || '#',
+    exeClassique: L.exeClassique || '#',
+    exeCloud: L.exeCloud || '#',
     wa:  L.wa ? ('https://wa.me/' + L.wa + '?text=' + encodeURIComponent('Bonjour, je souhaite des informations sur Sunu Paie')) : '#',
     mail:L.mail ? ('mailto:' + L.mail + '?subject=' + encodeURIComponent('Demande d\u2019informations Sunu Paie')) : '#'
   };
   document.querySelectorAll('[data-link]').forEach(function(a){
     var k = a.getAttribute('data-link');
     a.href = urls[k] || '#';
-    if(k === 'exe'){ a.setAttribute('download',''); }
+    if(k === 'exeClassique' || k === 'exeCloud'){ a.setAttribute('download',''); }
   });
   if((urls.app === '#' ) && document.getElementById('exe-note')){
     document.getElementById('exe-note').textContent = 'Configuration requise : renseignez window.LIENS en haut du fichier';
@@ -645,10 +675,11 @@ footer a:hover{color:var(--amber)}
     if(kind==='cloud'){
       document.getElementById('off-title').textContent='Sunu Paie Cloud — votre installation';
       wrap.innerHTML='<a class="off-opt" target="_blank" rel="noopener" href="'+urls.app+'"><b>Application web (PWA)</b><span>Téléphone et ordinateur — synchronisée, mises à jour automatiques.</span></a>'
-        +'<div class="off-note">La version Cloud s\u2019utilise via l\u2019application web : aucun installateur n\u2019est nécessaire, vos données vous suivent sur tous vos appareils.</div>'+waBtn;
+        +'<a class="off-opt" href="'+urls.exeCloud+'" download><b>Windows (.exe)</b><span>Raccourci de bureau vers l\u2019application en ligne — connexion internet toujours nécessaire.</span></a>'
+        +'<div class="off-note">Vos données restent hébergées en ligne dans les deux cas ; le .exe n\u2019est qu\u2019un raccourci pratique.</div>'+waBtn;
     }else{
       document.getElementById('off-title').textContent='Sunu Paie Classique — votre installation';
-      var o='<a class="off-opt" href="'+urls.exe+'" download><b>Windows (.exe)</b><span>Installation locale sur votre ordinateur — 100 % hors ligne. Recommandé.</span></a>';
+      var o='<a class="off-opt" href="'+urls.exeClassique+'" download><b>Windows (.exe)</b><span>Installation locale sur votre ordinateur — 100 % hors ligne. Recommandé.</span></a>';
       if(L.classique && L.classique.length>4){o+='<a class="off-opt" target="_blank" rel="noopener" href="'+L.classique+'"><b>Application web hors ligne (PWA)</b><span>Données stockées sur l\u2019appareil.</span></a>';}
       wrap.innerHTML=o+'<div class="off-note">Monoposte : un seul utilisateur, données stockées localement, sans sauvegarde cloud ni synchronisation.</div>'+waBtn;
     }
@@ -656,6 +687,16 @@ footer a:hover{color:var(--amber)}
   };
   om.addEventListener('click',function(e){if(e.target===om)window.closeOffer();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeOffer();});
+  window.showDlEdition=function(kind){
+    var cloudPane=document.getElementById('dl-cloud'), classPane=document.getElementById('dl-classique');
+    var tabCloud=document.getElementById('dl-tab-cloud'), tabClass=document.getElementById('dl-tab-classique');
+    if(!cloudPane||!classPane) return;
+    cloudPane.style.display = kind==='cloud' ? 'grid' : 'none';
+    classPane.style.display = kind==='classique' ? 'grid' : 'none';
+    if(tabCloud){ tabCloud.className = kind==='cloud' ? 'btn btn-p' : 'btn btn-o'; }
+    if(tabClass){ tabClass.className = kind==='classique' ? 'btn btn-p' : 'btn btn-o'; }
+  };
+  showDlEdition('cloud');
   var hint = document.getElementById('os-hint');
   if(hint){
     var ua = navigator.userAgent;
